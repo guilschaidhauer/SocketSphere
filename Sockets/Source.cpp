@@ -138,7 +138,7 @@ void Detect()
 		double dM10 = oMoments.m10;
 		double dArea = oMoments.m00;
 
-		imshow("Thresholded Image", imgThresholded); //show the thresholded image
+		//imshow("Thresholded Image", imgThresholded); //show the thresholded image
 
 		vector<vector<Point> > contours;
 		vector<Vec4i> hierarchy;
@@ -172,7 +172,7 @@ void Detect()
 			}
 		}
 
-		if (center.size() > 0) 
+		if (center.size() > 0)
 		{
 			theCircle.X = center[0].x;
 			theCircle.Y = center[0].y;
@@ -183,8 +183,8 @@ void Detect()
 		//string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius);
 		//cout << text << endl;
 
-		cv::flip(imgOriginal, imgOriginal, 1);
-		imshow("Original", imgOriginal);
+		//cv::flip(imgOriginal, imgOriginal, 1);
+		//imshow("Original", imgOriginal);
 
 		if (waitKey(30) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
 		{
@@ -231,15 +231,15 @@ void runServer()
 	printf("\nInitialising Winsock...");
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
-		printf("Failed. Error Code : %d", WSAGetLastError());
-		exit(EXIT_FAILURE);
+	printf("Failed. Error Code : %d", WSAGetLastError());
+	exit(EXIT_FAILURE);
 	}
 	printf("Initialised.\n");
 
 	//Create a socket
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET)
 	{
-		printf("Could not create socket : %d", WSAGetLastError());
+	printf("Could not create socket : %d", WSAGetLastError());
 	}
 	printf("Socket created.\n");
 
@@ -251,41 +251,41 @@ void runServer()
 	//Bind
 	if (bind(s, (struct sockaddr *)&server, sizeof(server)) == SOCKET_ERROR)
 	{
-		printf("Bind failed with error code : %d", WSAGetLastError());
-		exit(EXIT_FAILURE);
+	printf("Bind failed with error code : %d", WSAGetLastError());
+	exit(EXIT_FAILURE);
 	}
 	puts("Bind done");
 
 	//keep listening for data
 	while (1)
 	{
-		printf("Waiting for data...");
-		fflush(stdout);
+	printf("Waiting for data...");
+	fflush(stdout);
 
-		//clear the buffer by filling null, it might have previously received data
-		memset(buf, '\0', BUFLEN);
+	//clear the buffer by filling null, it might have previously received data
+	memset(buf, '\0', BUFLEN);
 
-		//try to receive some data, this is a blocking call
-		if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) == SOCKET_ERROR)
-		{
-			printf("recvfrom() failed with error code : %d", WSAGetLastError());
-			exit(EXIT_FAILURE);
-		}
+	//try to receive some data, this is a blocking call
+	if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) == SOCKET_ERROR)
+	{
+	printf("recvfrom() failed with error code : %d", WSAGetLastError());
+	exit(EXIT_FAILURE);
+	}
 
-		//print details of the client/peer and the data received
-		printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
-		//printf("Data: %s\n", buf);
+	//print details of the client/peer and the data received
+	printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
+	//printf("Data: %s\n", buf);
 
-		string str(buf);
-		cout << "hehe:" << str << endl;
+	string str(buf);
+	cout << "hehe:" << str << endl;
 
 
-		//now reply the client with the same data
-		if (sendto(s, buf, recv_len, 0, (struct sockaddr*) &si_other, slen) == SOCKET_ERROR)
-		{
-			printf("sendto() failed with error code : %d", WSAGetLastError());
-			exit(EXIT_FAILURE);
-		}
+	//now reply the client with the same data
+	if (sendto(s, buf, recv_len, 0, (struct sockaddr*) &si_other, slen) == SOCKET_ERROR)
+	{
+	printf("sendto() failed with error code : %d", WSAGetLastError());
+	exit(EXIT_FAILURE);
+	}
 	}
 
 	closesocket(s);
@@ -343,13 +343,13 @@ void runClient()
 		//clear the buffer by filling null, it might have previously received data
 		memset(buf, '\0', BUFLEN);
 		//try to receive some data, this is a blocking call
-		if (recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen) == SOCKET_ERROR)
+		/*if (recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen) == SOCKET_ERROR)
 		{
-			printf("recvfrom() failed with error code : %d", WSAGetLastError());
-			exit(EXIT_FAILURE);
+		printf("recvfrom() failed with error code : %d", WSAGetLastError());
+		exit(EXIT_FAILURE);
 		}
 
-		puts(buf);
+		puts(buf);*/
 	}
 
 	closesocket(s);
@@ -367,11 +367,11 @@ int main()
 
 	if (connectionType == "s")
 	{
-		runServer();
+	runServer();
 	}
 	else if (connectionType == "c")
 	{
-		runClient();
+	runClient();
 	}*/
 
 	//system("pause");
