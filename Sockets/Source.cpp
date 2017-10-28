@@ -63,7 +63,11 @@ Circle theCircle(0, 0, 0);
 void Init()
 {
 	red = Scalar(0, 0, 255);
-	_capture.open(0); //capture the video from webcam
+
+	string filename = "video2.mp4";
+
+	//_capture.open(0); //capture the video from webcam
+	_capture.open(filename); //capture the video from webcam
 
 	if (!_capture.isOpened())  // if not success, exit program
 	{
@@ -73,24 +77,24 @@ void Init()
 
 	namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
 
-	iLowH = 0;
-	iHighH = 140;
+	iLowH = 16;
+	iHighH = 40;
 
-	iLowS = 35;
-	iHighS = 255;
+	iLowS = 54;
+	iHighS = 252;
 
-	iLowV = 154;
+	iLowV = 169;
 	iHighV = 255;
 
 	//Create trackbars in "Control" window
-	createTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
+	/*createTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
 	createTrackbar("HighH", "Control", &iHighH, 179);
 
 	createTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
 	createTrackbar("HighS", "Control", &iHighS, 255);
 
 	createTrackbar("LowV", "Control", &iLowV, 255);//Value (0 - 255)
-	createTrackbar("HighV", "Control", &iHighV, 255);
+	createTrackbar("HighV", "Control", &iHighV, 255);*/
 
 	iLastX = -1;
 	iLastY = -1;
@@ -138,7 +142,7 @@ void Detect()
 		double dM10 = oMoments.m10;
 		double dArea = oMoments.m00;
 
-		imshow("Thresholded Image", imgThresholded); //show the thresholded image
+		//("Thresholded Image", imgThresholded); //show the thresholded image
 
 		vector<vector<Point> > contours;
 		vector<Vec4i> hierarchy;
@@ -184,7 +188,7 @@ void Detect()
 		//cout << text << endl;
 
 		//cv::flip(imgOriginal, imgOriginal, 1);
-		//imshow("Original", imgOriginal);
+		imshow("Original", imgOriginal);
 
 		if (waitKey(30) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
 		{
@@ -261,8 +265,11 @@ void runClient()
 		if (sendto(s, message, strlen(message), 0, (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
 		{
 			printf("sendto() failed with error code : %d", WSAGetLastError());
+			//cout << message << endl;
 			exit(EXIT_FAILURE);
 		}
+
+		cout << message << endl;
 
 		//receive a reply and print it
 		//clear the buffer by filling null, it might have previously received data
