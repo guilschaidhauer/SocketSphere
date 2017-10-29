@@ -192,7 +192,7 @@ void Detect()
 
 		if (waitKey(30) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
 		{
-			cout << "esc key is pressed by user" << endl;
+			//cout << "esc key is pressed by user" << endl;
 			break;
 		}
 	}
@@ -269,7 +269,7 @@ void runClient()
 			exit(EXIT_FAILURE);
 		}
 
-		cout << message << endl;
+		//cout << message << endl;
 
 		//receive a reply and print it
 		//clear the buffer by filling null, it might have previously received data
