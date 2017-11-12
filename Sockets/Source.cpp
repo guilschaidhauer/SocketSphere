@@ -24,6 +24,7 @@ using namespace cv;
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
+//#define SERVER "192.168.25.11"  //ip address of udp server
 #define SERVER "192.168.2.193"  //ip address of udp server
 
 struct Circle
@@ -66,8 +67,8 @@ void Init()
 
 	string filename = "video2.mp4";
 
-	//_capture.open(0); //capture the video from webcam
-	_capture.open(filename); //capture the video from webcam
+	_capture.open(0); //capture the video from webcam
+	//_capture.open(filename); //capture the video from webcam
 
 	if (!_capture.isOpened())  // if not success, exit program
 	{
@@ -77,13 +78,24 @@ void Init()
 
 	namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
 
-	iLowH = 16;
+	//Bright Room -> Light
+	/*iLowH = 16;
 	iHighH = 40;
 
 	iLowS = 54;
 	iHighS = 252;
 
 	iLowV = 169;
+	iHighV = 255;*/
+
+	//Bright Room -> No Light
+	iLowH = 23;
+	iHighH = 71;
+
+	iLowS = 42;
+	iHighS = 255;
+
+	iLowV = 108;
 	iHighV = 255;
 
 	//Create trackbars in "Control" window
@@ -169,7 +181,7 @@ void Detect()
 		Mat drawing = Mat::zeros(imgThresholded.size(), CV_8UC3);
 		for (int i = 0; i< contours.size(); i++)
 		{
-			if (contours[i].size() > 120)
+			if (contours[i].size() > 150)
 			{
 				circle(imgOriginal, center[i], (int)radius[i], red, 4, 8, 0);
 				circle(imgOriginal, center[i], 5, red, -1);
@@ -187,7 +199,7 @@ void Detect()
 		//string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius);
 		//cout << text << endl;
 
-		//cv::flip(imgOriginal, imgOriginal, 1);
+		cv::flip(imgOriginal, imgOriginal, 1);
 		imshow("Original", imgOriginal);
 
 		if (waitKey(30) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
@@ -265,7 +277,7 @@ void runClient()
 		if (sendto(s, message, strlen(message), 0, (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
 		{
 			printf("sendto() failed with error code : %d", WSAGetLastError());
-			//cout << message << endl;
+			cout << message << endl;
 			exit(EXIT_FAILURE);
 		}
 
