@@ -79,23 +79,32 @@ void Init()
 	namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
 
 	//Bright Room -> Light
-	/*iLowH = 16;
-	iHighH = 40;
+	//iLowH = 16;
+	//iHighH = 40;
 
-	iLowS = 54;
-	iHighS = 252;
+	//iLowS = 54;
+	//iHighS = 252;
 
-	iLowV = 169;
-	iHighV = 255;*/
+	//iLowV = 169;
+	//iHighV = 255;
 
 	//Bright Room -> No Light
-	iLowH = 23;
-	iHighH = 71;
+	//iLowH = 23;
+	//iHighH = 71;
 
-	iLowS = 42;
+	//iLowS = 42;
+	//iHighS = 255;
+
+	//iLowV = 108;
+	//iHighV = 255;
+
+	iLowH = 9;
+	iHighH = 51;
+
+	iLowS = 52;
 	iHighS = 255;
 
-	iLowV = 108;
+	iLowV = 199;
 	iHighV = 255;
 
 	//Create trackbars in "Control" window
@@ -273,15 +282,18 @@ void runClient()
 		string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius);
 		strcpy_s(message, text.c_str());
 
-		//send the message
-		if (sendto(s, message, strlen(message), 0, (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
+		if (message != "0-0-0")
 		{
-			printf("sendto() failed with error code : %d", WSAGetLastError());
-			cout << message << endl;
-			exit(EXIT_FAILURE);
+			//send the message
+			if (sendto(s, message, strlen(message), 0, (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
+			{
+				printf("sendto() failed with error code : %d", WSAGetLastError());
+				cout << message << endl;
+				exit(EXIT_FAILURE);
+			}
 		}
 
-		//cout << message << endl;
+		cout << message << endl;
 
 		//receive a reply and print it
 		//clear the buffer by filling null, it might have previously received data
