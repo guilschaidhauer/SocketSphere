@@ -98,6 +98,7 @@ void Init()
 	//iLowV = 108;
 	//iHighV = 255;
 
+	//Bright Room -> Red Light
 	iLowH = 9;
 	iHighH = 51;
 
