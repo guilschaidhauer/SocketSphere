@@ -24,8 +24,8 @@ using namespace cv;
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
-//#define SERVER "192.168.25.11"  //ip address of udp server
-#define SERVER "192.168.2.193"  //ip address of udp server
+#define SERVER "192.168.25.11"  //ip address of udp server
+//#define SERVER "192.168.2.193"  //ip address of udp server
 
 struct Circle
 {
@@ -89,24 +89,24 @@ void Init()
 	//iHighV = 255;
 
 	//Bright Room -> No Light
-	//iLowH = 23;
-	//iHighH = 71;
+	iLowH = 23;
+	iHighH = 71;
 
-	//iLowS = 42;
-	//iHighS = 255;
-
-	//iLowV = 108;
-	//iHighV = 255;
-
-	//Bright Room -> Red Light
-	iLowH = 9;
-	iHighH = 51;
-
-	iLowS = 52;
+	iLowS = 42;
 	iHighS = 255;
 
-	iLowV = 199;
+	iLowV = 108;
 	iHighV = 255;
+
+	//Bright Room -> Red Light
+	//iLowH = 9;
+	//iHighH = 51;
+
+	//iLowS = 52;
+	//iHighS = 255;
+
+	//iLowV = 199;
+	//iHighV = 255;
 
 	//Create trackbars in "Control" window
 	/*createTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
@@ -187,6 +187,7 @@ void Detect()
 
 		//highestRadius = getHighestFloat(&radius);
 
+		int index = 0;
 		/// Draw polygonal contour + bonding rects + circles
 		Mat drawing = Mat::zeros(imgThresholded.size(), CV_8UC3);
 		for (int i = 0; i< contours.size(); i++)
@@ -195,14 +196,15 @@ void Detect()
 			{
 				circle(imgOriginal, center[i], (int)radius[i], red, 4, 8, 0);
 				circle(imgOriginal, center[i], 5, red, -1);
+				index = i;
 			}
 		}
 
 		if (center.size() > 0)
 		{
-			theCircle.X = center[0].x;
-			theCircle.Y = center[0].y;
-			theCircle.Radius = radius[0];
+			theCircle.X = center[index].x;
+			theCircle.Y = center[index].y;
+			theCircle.Radius = radius[index];
 		}
 
 
