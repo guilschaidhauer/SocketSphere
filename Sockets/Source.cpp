@@ -296,7 +296,7 @@ void runClient()
 			}
 		}
 
-		cout << message << endl;
+		//cout << message << endl;
 
 		//receive a reply and print it
 		//clear the buffer by filling null, it might have previously received data
