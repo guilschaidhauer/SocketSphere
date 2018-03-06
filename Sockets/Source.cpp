@@ -24,9 +24,9 @@ using namespace cv;
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
-#define SERVER "192.168.43.227"  //ip address of udp server
+//#define SERVER "192.168.43.227"  //ip address of udp server
 //#define SERVER "192.168.2.193"  //ip address of udp server
-//#define SERVER "192.168.25.11"  //ip address of udp server
+#define SERVER "192.168.25.11"  //ip address of udp server
 
 struct Circle
 {
