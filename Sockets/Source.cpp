@@ -68,7 +68,7 @@ void Init()
 
 	string filename = "video2.mp4";
 
-	_capture.open(0); //capture the video from webcam
+	//_capture.open(0); //capture the video from webcam
 	//_capture.open(filename); //capture the video from webcam
 
 	if (!_capture.isOpened())  // if not success, exit program
