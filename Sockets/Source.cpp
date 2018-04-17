@@ -248,8 +248,8 @@ void Detect()
 			theCircle.On = 1;
 		}
 
-		string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius) + "-" + to_string(theCircle.On);
-		cout << text << endl;
+		/*string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius) + "-" + to_string(theCircle.On);
+		cout << text << endl;*/
 
 		if (waitKey(30) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
 		{
@@ -319,10 +319,10 @@ void runClient()
 		//gets(message);
 		//cin >> message;
 		//string text = "120.0-150.0-180.0";
-		string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius) + "-" + to_string(theCircle.On);
+		string text = to_string(theCircle.X) + "|" + to_string(theCircle.Y) + "|" + to_string(theCircle.Radius) + "|" + to_string(theCircle.On);
 		strcpy_s(message, text.c_str());
 
-		if (message != "0-0-0-0")
+		if (message != "0|0|0|0")
 		{
 			//send the message
 			if (sendto(s, message, strlen(message), 0, (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
