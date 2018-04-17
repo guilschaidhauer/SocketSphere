@@ -30,8 +30,8 @@ using namespace cv;
 
 struct Circle
 {
-	Circle(int x, int y, int radius) : X(x), Y(y), Radius(radius) {}
-	int X, Y, Radius;
+	Circle(int x, int y, int radius, int on) : X(x), Y(y), Radius(radius), On(on) {}
+	int X, Y, Radius, On;
 };
 
 //========================================================
@@ -43,33 +43,138 @@ RNG rng(12345);
 Mat imgTmp;
 Mat imgLines;
 
-int iLowH;
-int iHighH;
+//int iLowH;
+//int iHighH;
+//
+//int iLowS;
+//int iHighS;
+//
+//int iLowV;
+//int iHighV;
+//
+//int iLastX;
+//int iLastY;
 
-int iLowS;
-int iHighS;
 
-int iLowV;
-int iHighV;
+//Yellow
+int iLowH_1 = 23;
+int iHighH_1 = 38;
 
-int iLastX;
-int iLastY;
+int iLowS_1 = 52;
+int iHighS_1 = 255;
+
+int iLowV_1 = 229;
+int iHighV_1 = 255;
+
+//Green
+int iLowH_2 = 37;
+int iHighH_2 = 88;
+
+int iLowS_2 = 47;
+int iHighS_2 = 255;
+
+int iLowV_2 = 232;
+int iHighV_2 = 255;
 
 CascadeClassifier _faceCascade;
 String _windowName = "Unity OpenCV Interop Sample";
 VideoCapture _capture;
 int _scale = 1;
-Circle theCircle(0, 0, 0);
+Circle theCircle(0, 0, 0, 0);
 
+int detectAndDrawCircle(VideoCapture cap, int iLowH, int iHighH, int iLowS, int iHighS, int iLowV, int iHighV, Scalar red, String windowName, String tWindowsName, bool shouldTryToDetect)
+{
+	if (!shouldTryToDetect)
+		return 0;
+
+	int returnValue = 0;
+	Mat imgOriginal1;
+
+	bool bSuccess_1 = cap.read(imgOriginal1); // read a new frame from video
+
+	if (!bSuccess_1) //if not success, break loop
+	{
+		cout << "Cannot read a frame from video stream" << endl;
+		return 0;
+	}
+
+	cv::flip(imgOriginal1, imgOriginal1, 1);
+	//imshow("Original", imgOriginal);
+
+	Mat imgHSV_1;
+	cvtColor(imgOriginal1, imgHSV_1, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
+
+	Mat imgThresholded_1;
+	inRange(imgHSV_1, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded_1); //Threshold the image //morphological opening (removes small objects from the foreground)
+
+	erode(imgThresholded_1, imgThresholded_1, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+	dilate(imgThresholded_1, imgThresholded_1, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+
+	//morphological closing (removes small holes from the foreground)
+	dilate(imgThresholded_1, imgThresholded_1, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+	erode(imgThresholded_1, imgThresholded_1, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
+
+	//imshow(tWindowsName, imgThresholded_1); //show the thresholded image
+
+	vector<vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+	findContours(imgThresholded_1, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+	vector<vector<Point> > contours_poly(contours.size());
+	vector<Rect> boundRect(contours.size());
+	vector<Point2f>center(contours.size());
+	vector<float>radius(contours.size());
+
+	for (int i = 0; i < contours.size(); i++)
+	{
+		if (contours[i].size() > 5)
+		{
+			approxPolyDP(Mat(contours[i]), contours_poly[i], 3, true);
+			boundRect[i] = boundingRect(Mat(contours_poly[i]));
+			minEnclosingCircle((Mat)contours_poly[i], center[i], radius[i]);
+		}
+	}
+
+	int index = -5;
+	/// Draw polygonal contour + bonding rects + circles
+	Mat drawing = Mat::zeros(imgThresholded_1.size(), CV_8UC3);
+	for (int i = 0; i < contours.size(); i++)
+	{
+		if (contours[i].size() > 100)
+		{
+			circle(imgOriginal1, center[i], (int)radius[i], red, 4, 8, 0);
+			circle(imgOriginal1, center[i], 5, red, -1);
+
+			Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
+			circle(drawing, center[i], 20, color, 4, 8, 0);
+			index = i;
+			returnValue = 1;
+		}
+	}
+
+	if (index >= 0)
+	{
+		if (center.size() > 0)
+		{
+			theCircle.X = center[index].x;
+			theCircle.Y = center[index].y;
+			theCircle.Radius = radius[index];
+		}
+	}
+
+	imshow(windowName, imgOriginal1);
+
+	return returnValue;
+}
 
 void Init()
 {
 	red = Scalar(0, 0, 255);
 
-	string filename = "video2.mp4";
+	string filename = "multicolor.mp4";
 
 	//_capture.open(0); //capture the video from webcam
-	//_capture.open(filename); //capture the video from webcam
+	_capture.open(filename); //capture the video from webcam
 
 	if (!_capture.isOpened())  // if not success, exit program
 	{
@@ -77,50 +182,29 @@ void Init()
 		return;
 	}
 
-	namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
-
-	//Bright Room -> Light
-	//iLowH = 16;
-	//iHighH = 40;
-
-	//iLowS = 54;
-	//iHighS = 252;
-
-	//iLowV = 169;
-	//iHighV = 255;
-
-	//Bright Room -> No Light
-	iLowH = 23;
-	iHighH = 71;
-
-	iLowS = 42;
-	iHighS = 255;
-
-	iLowV = 108;
-	iHighV = 255;
-
-	//Bright Room -> Red Light
-	//iLowH = 9;
-	//iHighH = 51;
-
-	//iLowS = 52;
-	//iHighS = 255;
-
-	//iLowV = 199;
-	//iHighV = 255;
+	namedWindow("Control 1", CV_WINDOW_AUTOSIZE); //create a window called "Control"
 
 	//Create trackbars in "Control" window
-	/*createTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
-	createTrackbar("HighH", "Control", &iHighH, 179);
+	createTrackbar("LowH", "Control", &iLowH_1, 179); //Hue (0 - 179)
+	createTrackbar("HighH", "Control", &iHighH_1, 179);
 
-	createTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
-	createTrackbar("HighS", "Control", &iHighS, 255);
+	createTrackbar("LowS", "Control", &iLowS_1, 255); //Saturation (0 - 255)
+	createTrackbar("HighS", "Control", &iHighS_1, 255);
 
-	createTrackbar("LowV", "Control", &iLowV, 255);//Value (0 - 255)
-	createTrackbar("HighV", "Control", &iHighV, 255);*/
+	createTrackbar("LowV", "Control", &iLowV_1, 255);//Value (0 - 255)
+	createTrackbar("HighV", "Control", &iHighV_1, 255);
 
-	iLastX = -1;
-	iLastY = -1;
+	namedWindow("Control 2", CV_WINDOW_AUTOSIZE); //create a window called "Control"
+
+	//Create trackbars in "Control" window
+	createTrackbar("LowH", "Control", &iLowH_2, 179); //Hue (0 - 179)
+	createTrackbar("HighH", "Control", &iHighH_2, 179);
+
+	createTrackbar("LowS", "Control", &iLowS_2, 255); //Saturation (0 - 255)
+	createTrackbar("HighS", "Control", &iHighS_2, 255);
+
+	createTrackbar("LowV", "Control", &iLowV_2, 255);//Value (0 - 255)
+	createTrackbar("HighV", "Control", &iHighV_2, 255);
 
 	//Capture a temporary image from the camera
 	imgTmp;
@@ -132,92 +216,44 @@ void Init()
 
 void Detect()
 {
+	Init();
+
+	bool shouldTryToDetectColor1 = true;
+
+	int count = 0;
+
 	while (true)
 	{
-		Mat imgOriginal;
-
-		bool bSuccess = _capture.read(imgOriginal); // read a new frame from video
-
-
-		if (!bSuccess) //if not success, break loop
+		if (detectAndDrawCircle(_capture, iLowH_2, iHighH_2, iLowS_2, iHighS_2, iLowV_2, iHighV_2, red, "Circle 2", "Threshold window 2", shouldTryToDetectColor1) == 1)
 		{
-			cout << "Cannot read a frame from video stream" << endl;
-			break;
+			//cout << "Off" << endl;
+			theCircle.On = 0;
 		}
-
-		Mat imgHSV;
-		cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV
-
-		Mat imgThresholded;
-		inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image //morphological opening (removes small objects from the foreground)
-
-		erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-		dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-
-		//morphological closing (removes small holes from the foreground)
-		dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-		erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
-
-		//Calculate the moments of the thresholded image
-		Moments oMoments = moments(imgThresholded);
-
-		double dM01 = oMoments.m01;
-		double dM10 = oMoments.m10;
-		double dArea = oMoments.m00;
-
-		//("Thresholded Image", imgThresholded); //show the thresholded image
-
-		vector<vector<Point> > contours;
-		vector<Vec4i> hierarchy;
-		findContours(imgThresholded, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-		vector<vector<Point> > contours_poly(contours.size());
-		vector<Rect> boundRect(contours.size());
-		vector<Point2f>center(contours.size());
-		vector<float>radius(contours.size());
-
-		for (int i = 0; i < contours.size(); i++)
+		else
 		{
-			if (contours[i].size() > 120)
+			shouldTryToDetectColor1 = false;
+			if (detectAndDrawCircle(_capture, iLowH_1, iHighH_1, iLowS_1, iHighS_1, iLowV_1, iHighV_1, red, "Circle 1", "Threshold window 1", true) == 0);
 			{
-				approxPolyDP(Mat(contours[i]), contours_poly[i], 3, true);
-				boundRect[i] = boundingRect(Mat(contours_poly[i]));
-				minEnclosingCircle((Mat)contours_poly[i], center[i], radius[i]);
+				if (count < 5)
+				{
+					count++;
+				}
+				else
+				{
+					shouldTryToDetectColor1 = true;
+					count = 0;
+				}
 			}
+			//cout << "On" << endl;
+			theCircle.On = 1;
 		}
 
-		//highestRadius = getHighestFloat(&radius);
-
-		int index = 0;
-		/// Draw polygonal contour + bonding rects + circles
-		Mat drawing = Mat::zeros(imgThresholded.size(), CV_8UC3);
-		for (int i = 0; i< contours.size(); i++)
-		{
-			if (contours[i].size() > 150)
-			{
-				circle(imgOriginal, center[i], (int)radius[i], red, 4, 8, 0);
-				circle(imgOriginal, center[i], 5, red, -1);
-				index = i;
-			}
-		}
-
-		if (center.size() > 0)
-		{
-			theCircle.X = center[index].x;
-			theCircle.Y = center[index].y;
-			theCircle.Radius = radius[index];
-		}
-
-
-		//string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius);
-		//cout << text << endl;
-
-		cv::flip(imgOriginal, imgOriginal, 1);
-		imshow("Original", imgOriginal);
+		string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius) + "-" + to_string(theCircle.On);
+		cout << text << endl;
 
 		if (waitKey(30) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
 		{
-			//cout << "esc key is pressed by user" << endl;
+			cout << "esc key is pressed by user" << endl;
 			break;
 		}
 	}
@@ -283,10 +319,10 @@ void runClient()
 		//gets(message);
 		//cin >> message;
 		//string text = "120.0-150.0-180.0";
-		string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius);
+		string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius) + "-" + to_string(theCircle.On);
 		strcpy_s(message, text.c_str());
 
-		if (message != "0-0-0")
+		if (message != "0-0-0-0")
 		{
 			//send the message
 			if (sendto(s, message, strlen(message), 0, (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
@@ -318,7 +354,7 @@ void runClient()
 
 int main()
 {
-	Init();
+	//Init();
 	thread first(Detect);
 	//Detect();
 	runClient();
