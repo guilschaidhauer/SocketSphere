@@ -208,34 +208,76 @@ void Detect()
 	bool shouldTryToDetectColor1 = true;
 
 	int count = 0;
+	bool isFirstColor = true;
+	int a, b, c, d, e, f;
+	a = iLowH_2;
+	b = iHighH_2;
+	c = iLowS_2;
+	d = iHighS_2;
+	e = iLowV_2;
+	f = iHighV_2;
 
 	while (true)
 	{
-		//detectAndDrawCircle(_capture, iLowH_2, iHighH_2, iLowS_2, iHighS_2, iLowV_2, iHighV_2, red, "Circle 1", "Threshold window 1", true);
+		int detectionReturnValue = detectAndDrawCircle(_capture, a, b, c, d, e, f, red, "Circle 2", "Threshold window 2", shouldTryToDetectColor1);
 
-		if (detectAndDrawCircle(_capture, iLowH_2, iHighH_2, iLowS_2, iHighS_2, iLowV_2, iHighV_2, red, "Circle 2", "Threshold window 2", shouldTryToDetectColor1) == 1)
+		if (detectionReturnValue == 0)
 		{
-			//cout << "Off" << endl;
-			theCircle.On = 0;
-		}
-		else
-		{
-			shouldTryToDetectColor1 = false;
-			if (detectAndDrawCircle(_capture, iLowH_1, iHighH_1, iLowS_1, iHighS_1, iLowV_1, iHighV_1, red, "Circle 1", "Threshold window 1", true) == 0);
+			count++;
+
+			if (count > 0)
 			{
-				if (count < 1)
+				if (!isFirstColor)
 				{
-					count++;
+					a = iLowH_2;
+					b = iHighH_2;
+					c = iLowS_2;
+					d = iHighS_2;
+					e = iLowV_2;
+					f = iHighV_2;
 				}
 				else
 				{
-					shouldTryToDetectColor1 = true;
-					count = 0;
+					a = iLowH_1;
+					b = iHighH_1;
+					c = iLowS_1;
+					d = iHighS_1;
+					e = iLowV_1;
+					f = iHighV_1;
 				}
+				isFirstColor = !isFirstColor;
+				count = 0;
 			}
-			//cout << "On" << endl;
-			theCircle.On = 1;
 		}
+
+		if (detectionReturnValue == 1 && !isFirstColor)
+			theCircle.On = 1;
+		else 
+			theCircle.On = 0;
+
+		//if (detectAndDrawCircle(_capture, iLowH_2, iHighH_2, iLowS_2, iHighS_2, iLowV_2, iHighV_2, red, "Circle 2", "Threshold window 2", shouldTryToDetectColor1) == 1)
+		//{
+		//	//cout << "Off" << endl;
+		//	theCircle.On = 0;
+		//}
+		//else
+		//{
+		//	shouldTryToDetectColor1 = false;
+		//	if (detectAndDrawCircle(_capture, iLowH_1, iHighH_1, iLowS_1, iHighS_1, iLowV_1, iHighV_1, red, "Circle 1", "Threshold window 1", true) == 0);
+		//	{
+		//		if (count < 1)
+		//		{
+		//			count++;
+		//		}
+		//		else
+		//		{
+		//			shouldTryToDetectColor1 = true;
+		//			count = 0;
+		//		}
+		//	}
+		//	//cout << "On" << endl;
+		//	theCircle.On = 1;
+		//}
 
 		/*string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius) + "-" + to_string(theCircle.On);
 		cout << text << endl;*/
@@ -322,7 +364,7 @@ void runClient()
 			}
 		}
 
-		//cout << message << endl;
+		cout << message << endl;
 
 		//receive a reply and print it
 		//clear the buffer by filling null, it might have previously received data
