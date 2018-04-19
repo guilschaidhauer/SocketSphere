@@ -24,9 +24,9 @@ using namespace cv;
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
-//#define SERVER "192.168.43.227"  //ip address of udp server
+#define SERVER "192.168.43.227"  //ip address of udp server
 //#define SERVER "192.168.2.193"  //ip address of udp server
-#define SERVER "192.168.25.11"  //ip address of udp server
+//#define SERVER "192.168.25.11"  //ip address of udp server
 
 struct Circle
 {
@@ -42,19 +42,6 @@ RNG rng(12345);
 
 Mat imgTmp;
 Mat imgLines;
-
-//int iLowH;
-//int iHighH;
-//
-//int iLowS;
-//int iHighS;
-//
-//int iLowV;
-//int iHighV;
-//
-//int iLastX;
-//int iLastY;
-
 
 //Yellow
 int iLowH_1 = 23;
@@ -224,6 +211,8 @@ void Detect()
 
 	while (true)
 	{
+		//detectAndDrawCircle(_capture, iLowH_2, iHighH_2, iLowS_2, iHighS_2, iLowV_2, iHighV_2, red, "Circle 1", "Threshold window 1", true);
+
 		if (detectAndDrawCircle(_capture, iLowH_2, iHighH_2, iLowS_2, iHighS_2, iLowV_2, iHighV_2, red, "Circle 2", "Threshold window 2", shouldTryToDetectColor1) == 1)
 		{
 			//cout << "Off" << endl;
@@ -234,7 +223,7 @@ void Detect()
 			shouldTryToDetectColor1 = false;
 			if (detectAndDrawCircle(_capture, iLowH_1, iHighH_1, iLowS_1, iHighS_1, iLowV_1, iHighV_1, red, "Circle 1", "Threshold window 1", true) == 0);
 			{
-				if (count < 5)
+				if (count < 1)
 				{
 					count++;
 				}
