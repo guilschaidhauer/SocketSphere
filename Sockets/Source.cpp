@@ -101,7 +101,7 @@ int detectAndDrawCircle(VideoCapture cap, int iLowH, int iHighH, int iLowS, int 
 	dilate(imgThresholded_1, imgThresholded_1, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
 	erode(imgThresholded_1, imgThresholded_1, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)));
 
-	//imshow(tWindowsName, imgThresholded_1); //show the thresholded image
+	imshow(tWindowsName, imgThresholded_1); //show the thresholded image
 
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
@@ -160,8 +160,8 @@ void Init()
 
 	string filename = "multicolor.mp4";
 
-	//_capture.open(0); //capture the video from webcam
-	_capture.open(filename); //capture the video from webcam
+	_capture.open(0); //capture the video from webcam
+	//_capture.open(filename); //capture the video from webcam
 
 	if (!_capture.isOpened())  // if not success, exit program
 	{
@@ -209,17 +209,17 @@ void Detect()
 
 	int count = 0;
 	bool isFirstColor = true;
-	int a, b, c, d, e, f;
-	a = iLowH_2;
-	b = iHighH_2;
-	c = iLowS_2;
-	d = iHighS_2;
-	e = iLowV_2;
-	f = iHighV_2;
+	int iLowH, iHighH, iLowS, iHighS, iLowV, iHighV;
+	iLowH = iLowH_2;
+	iHighH = iHighH_2;
+	iLowS = iLowS_2;
+	iHighS = iHighS_2;
+	iLowV = iLowV_2;
+	iHighV = iHighV_2;
 
 	while (true)
 	{
-		int detectionReturnValue = detectAndDrawCircle(_capture, a, b, c, d, e, f, red, "Circle 2", "Threshold window 2", shouldTryToDetectColor1);
+		int detectionReturnValue = detectAndDrawCircle(_capture, iLowH, iHighH, iLowS, iHighS, iLowV, iHighV, red, "Circle", "Threshold window", shouldTryToDetectColor1);
 
 		if (detectionReturnValue == 0)
 		{
@@ -229,21 +229,21 @@ void Detect()
 			{
 				if (!isFirstColor)
 				{
-					a = iLowH_2;
-					b = iHighH_2;
-					c = iLowS_2;
-					d = iHighS_2;
-					e = iLowV_2;
-					f = iHighV_2;
+					iLowH = iLowH_2;
+					iHighH = iHighH_2;
+					iLowS = iLowS_2;
+					iHighS = iHighS_2;
+					iLowV = iLowV_2;
+					iHighV = iHighV_2;
 				}
 				else
 				{
-					a = iLowH_1;
-					b = iHighH_1;
-					c = iLowS_1;
-					d = iHighS_1;
-					e = iLowV_1;
-					f = iHighV_1;
+					iLowH = iLowH_1;
+					iHighH = iHighH_1;
+					iLowS = iLowS_1;
+					iHighS = iHighS_1;
+					iLowV = iLowV_1;
+					iHighV = iHighV_1;
 				}
 				isFirstColor = !isFirstColor;
 				count = 0;
