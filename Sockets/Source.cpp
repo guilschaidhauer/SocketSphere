@@ -24,9 +24,9 @@ using namespace cv;
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
-#define SERVER "192.168.43.227"  //ip address of udp server
+//#define SERVER "192.168.43.227"  //ip address of udp server
 //#define SERVER "192.168.2.193"  //ip address of udp server
-//#define SERVER "192.168.25.11"  //ip address of udp server
+#define SERVER "192.168.25.11"  //ip address of udp server
 
 struct Circle
 {
@@ -44,24 +44,14 @@ Mat imgTmp;
 Mat imgLines;
 
 //Yellow
-int iLowH_1 = 23;
-int iHighH_1 = 38;
+int iLowH_1 = 28;
+int iHighH_1 = 44;
 
-int iLowS_1 = 52;
-int iHighS_1 = 255;
+int iLowS_1 = 87;
+int iHighS_1 = 204;
 
-int iLowV_1 = 229;
+int iLowV_1 = 147;
 int iHighV_1 = 255;
-
-//Green
-int iLowH_2 = 37;
-int iHighH_2 = 88;
-
-int iLowS_2 = 47;
-int iHighS_2 = 255;
-
-int iLowV_2 = 232;
-int iHighV_2 = 255;
 
 CascadeClassifier _faceCascade;
 String _windowName = "Unity OpenCV Interop Sample";
@@ -169,29 +159,16 @@ void Init()
 		return;
 	}
 
-	namedWindow("Control 1", CV_WINDOW_AUTOSIZE); //create a window called "Control"
+	//namedWindow("Control 1", CV_WINDOW_AUTOSIZE);
 
-	//Create trackbars in "Control" window
-	createTrackbar("LowH", "Control", &iLowH_1, 179); //Hue (0 - 179)
-	createTrackbar("HighH", "Control", &iHighH_1, 179);
+	//createTrackbar("LowH", "Control", &iLowH_1, 179); //Hue (0 - 179)
+	//createTrackbar("HighH", "Control", &iHighH_1, 179);
 
-	createTrackbar("LowS", "Control", &iLowS_1, 255); //Saturation (0 - 255)
-	createTrackbar("HighS", "Control", &iHighS_1, 255);
+	//createTrackbar("LowS", "Control", &iLowS_1, 255); //Saturation (0 - 255)
+	//createTrackbar("HighS", "Control", &iHighS_1, 255);
 
-	createTrackbar("LowV", "Control", &iLowV_1, 255);//Value (0 - 255)
-	createTrackbar("HighV", "Control", &iHighV_1, 255);
-
-	namedWindow("Control 2", CV_WINDOW_AUTOSIZE); //create a window called "Control"
-
-	//Create trackbars in "Control" window
-	createTrackbar("LowH", "Control", &iLowH_2, 179); //Hue (0 - 179)
-	createTrackbar("HighH", "Control", &iHighH_2, 179);
-
-	createTrackbar("LowS", "Control", &iLowS_2, 255); //Saturation (0 - 255)
-	createTrackbar("HighS", "Control", &iHighS_2, 255);
-
-	createTrackbar("LowV", "Control", &iLowV_2, 255);//Value (0 - 255)
-	createTrackbar("HighV", "Control", &iHighV_2, 255);
+	//createTrackbar("LowV", "Control", &iLowV_1, 255);//Value (0 - 255)
+	//createTrackbar("HighV", "Control", &iHighV_1, 255);
 
 	//Capture a temporary image from the camera
 	imgTmp;
@@ -209,75 +186,12 @@ void Detect()
 
 	int count = 0;
 	bool isFirstColor = true;
-	int iLowH, iHighH, iLowS, iHighS, iLowV, iHighV;
-	iLowH = iLowH_2;
-	iHighH = iHighH_2;
-	iLowS = iLowS_2;
-	iHighS = iHighS_2;
-	iLowV = iLowV_2;
-	iHighV = iHighV_2;
 
 	while (true)
 	{
-		int detectionReturnValue = detectAndDrawCircle(_capture, iLowH, iHighH, iLowS, iHighS, iLowV, iHighV, red, "Circle", "Threshold window", shouldTryToDetectColor1);
-
-		if (detectionReturnValue == 0)
-		{
-			count++;
-
-			if (count > 0)
-			{
-				if (!isFirstColor)
-				{
-					iLowH = iLowH_2;
-					iHighH = iHighH_2;
-					iLowS = iLowS_2;
-					iHighS = iHighS_2;
-					iLowV = iLowV_2;
-					iHighV = iHighV_2;
-				}
-				else
-				{
-					iLowH = iLowH_1;
-					iHighH = iHighH_1;
-					iLowS = iLowS_1;
-					iHighS = iHighS_1;
-					iLowV = iLowV_1;
-					iHighV = iHighV_1;
-				}
-				isFirstColor = !isFirstColor;
-				count = 0;
-			}
-		}
-
-		if (detectionReturnValue == 1 && !isFirstColor)
-			theCircle.On = 1;
-		else 
-			theCircle.On = 0;
-
-		//if (detectAndDrawCircle(_capture, iLowH_2, iHighH_2, iLowS_2, iHighS_2, iLowV_2, iHighV_2, red, "Circle 2", "Threshold window 2", shouldTryToDetectColor1) == 1)
-		//{
-		//	//cout << "Off" << endl;
-		//	theCircle.On = 0;
-		//}
-		//else
-		//{
-		//	shouldTryToDetectColor1 = false;
-		//	if (detectAndDrawCircle(_capture, iLowH_1, iHighH_1, iLowS_1, iHighS_1, iLowV_1, iHighV_1, red, "Circle 1", "Threshold window 1", true) == 0);
-		//	{
-		//		if (count < 1)
-		//		{
-		//			count++;
-		//		}
-		//		else
-		//		{
-		//			shouldTryToDetectColor1 = true;
-		//			count = 0;
-		//		}
-		//	}
-		//	//cout << "On" << endl;
-		//	theCircle.On = 1;
-		//}
+		int detectionReturnValue = detectAndDrawCircle(_capture, iLowH_1, iHighH_1, iLowS_1, iHighS_1, iLowV_1, iHighV_1, red, "Circle", "Threshold window", shouldTryToDetectColor1);
+		
+		theCircle.On = 0;
 
 		/*string text = to_string(theCircle.X) + "-" + to_string(theCircle.Y) + "-" + to_string(theCircle.Radius) + "-" + to_string(theCircle.On);
 		cout << text << endl;*/
