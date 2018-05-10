@@ -24,9 +24,9 @@ using namespace cv;
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
-//#define SERVER "192.168.43.227"  //ip address of udp server
+#define SERVER "192.168.43.227"  //ip address of udp server
 //#define SERVER "192.168.2.193"  //ip address of udp server
-#define SERVER "192.168.25.11"  //ip address of udp server
+//#define SERVER "192.168.25.11"  //ip address of udp server
 
 struct Circle
 {
@@ -44,14 +44,14 @@ Mat imgTmp;
 Mat imgLines;
 
 //Yellow
-int iLowH_1 = 28;
-int iHighH_1 = 44;
+int iLowH_1 = 21;
+int iHighH_1 = 33;
 
-int iLowS_1 = 87;
-int iHighS_1 = 204;
+int iLowS_1 = 124;
+int iHighS_1 = 250;
 
-int iLowV_1 = 147;
-int iHighV_1 = 255;
+int iLowV_1 = 129;
+int iHighV_1 = 212;
 
 CascadeClassifier _faceCascade;
 String _windowName = "Unity OpenCV Interop Sample";
