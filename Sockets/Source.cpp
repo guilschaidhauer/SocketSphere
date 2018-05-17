@@ -169,29 +169,29 @@ void Init()
 		return;
 	}
 
-	namedWindow("Control 1", CV_WINDOW_AUTOSIZE); //create a window called "Control"
+	//namedWindow("Control 1", CV_WINDOW_AUTOSIZE); //create a window called "Control"
 
-	//Create trackbars in "Control" window
-	createTrackbar("LowH", "Control", &iLowH_1, 179); //Hue (0 - 179)
-	createTrackbar("HighH", "Control", &iHighH_1, 179);
+	////Create trackbars in "Control" window
+	//createTrackbar("LowH", "Control", &iLowH_1, 179); //Hue (0 - 179)
+	//createTrackbar("HighH", "Control", &iHighH_1, 179);
 
-	createTrackbar("LowS", "Control", &iLowS_1, 255); //Saturation (0 - 255)
-	createTrackbar("HighS", "Control", &iHighS_1, 255);
+	//createTrackbar("LowS", "Control", &iLowS_1, 255); //Saturation (0 - 255)
+	//createTrackbar("HighS", "Control", &iHighS_1, 255);
 
-	createTrackbar("LowV", "Control", &iLowV_1, 255);//Value (0 - 255)
-	createTrackbar("HighV", "Control", &iHighV_1, 255);
+	//createTrackbar("LowV", "Control", &iLowV_1, 255);//Value (0 - 255)
+	//createTrackbar("HighV", "Control", &iHighV_1, 255);
 
-	namedWindow("Control 2", CV_WINDOW_AUTOSIZE); //create a window called "Control"
+	//namedWindow("Control 2", CV_WINDOW_AUTOSIZE); //create a window called "Control"
 
-	//Create trackbars in "Control" window
-	createTrackbar("LowH", "Control", &iLowH_2, 179); //Hue (0 - 179)
-	createTrackbar("HighH", "Control", &iHighH_2, 179);
+	////Create trackbars in "Control" window
+	//createTrackbar("LowH", "Control", &iLowH_2, 179); //Hue (0 - 179)
+	//createTrackbar("HighH", "Control", &iHighH_2, 179);
 
-	createTrackbar("LowS", "Control", &iLowS_2, 255); //Saturation (0 - 255)
-	createTrackbar("HighS", "Control", &iHighS_2, 255);
+	//createTrackbar("LowS", "Control", &iLowS_2, 255); //Saturation (0 - 255)
+	//createTrackbar("HighS", "Control", &iHighS_2, 255);
 
-	createTrackbar("LowV", "Control", &iLowV_2, 255);//Value (0 - 255)
-	createTrackbar("HighV", "Control", &iHighV_2, 255);
+	//createTrackbar("LowV", "Control", &iLowV_2, 255);//Value (0 - 255)
+	//createTrackbar("HighV", "Control", &iHighV_2, 255);
 
 	//Capture a temporary image from the camera
 	imgTmp;
